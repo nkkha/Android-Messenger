@@ -37,27 +37,19 @@ public class MessageActivity extends AppCompatActivity {
 
     CircleImageView profile_image;
     TextView username;
+    ImageButton btn_send;
+    EditText text_send;
+    RecyclerView recyclerView;
 
     FirebaseUser fuser;
     DatabaseReference reference;
 
-    ImageButton btn_send;
-    EditText text_send;
-
     MessageAdapter messageAdapter;
     List<Chat> mchat;
-
-    RecyclerView recyclerView;
+    String userid;
+    boolean notify = false;
 
     Intent intent;
-
-    ValueEventListener seenListener;
-
-    String userid;
-
-//    APIService apiService;
-
-    boolean notify = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
