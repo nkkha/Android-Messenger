@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.khama.chatappandroid.Fragments.ChatsFragment;
+import com.khama.chatappandroid.Fragments.ProfileFragment;
 import com.khama.chatappandroid.Fragments.UsersFragment;
 import com.khama.chatappandroid.Model.User;
 
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         viewPagerAdapter.addFragment(new ChatsFragment(), "Chats");
         viewPagerAdapter.addFragment(new UsersFragment(), "Users");
+        viewPagerAdapter.addFragment(new ProfileFragment(), "Profile");
 
         viewPager.setAdapter(viewPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
