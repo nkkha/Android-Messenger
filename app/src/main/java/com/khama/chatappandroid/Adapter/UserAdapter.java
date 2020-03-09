@@ -26,10 +26,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     String theLastMessage;
 
-    public UserAdapter(Context mContext, List<User> mUsers, boolean ischat){
+    public UserAdapter(Context mContext, List<User> mUsers){
         this.mUsers = mUsers;
         this.mContext = mContext;
-        this.ischat = ischat;
     }
 
     @NonNull
