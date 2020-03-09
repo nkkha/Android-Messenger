@@ -24,6 +24,7 @@ import com.khama.chatappandroid.Model.User;
 import com.khama.chatappandroid.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ChatsFragment extends Fragment {
@@ -102,7 +103,7 @@ public class ChatsFragment extends Fragment {
                         }
                     }
                 }
-                userAdapter = new UserAdapter(getContext(), mUsers);
+                userAdapter = new UserAdapter(getContext(), mUsers, true);
                 recyclerView.setAdapter(userAdapter);
             }
 
@@ -111,5 +112,26 @@ public class ChatsFragment extends Fragment {
 
             }
         });
+    }
+
+    private void status(String status){
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+
+        reference.updateChildren(hashMap);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        status("online");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        status("offline");
     }
 }

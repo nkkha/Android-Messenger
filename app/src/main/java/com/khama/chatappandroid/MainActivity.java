@@ -12,7 +12,6 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -31,6 +30,8 @@ import com.khama.chatappandroid.Fragments.UsersFragment;
 import com.khama.chatappandroid.Model.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("");
 
 
         profile_image = findViewById(R.id.profile_image);
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
+                assert user != null;
                 username.setText(user.getUsername());
                 if (user.getImageURL().equals("default")){
                     profile_image.setImageResource(R.mipmap.ic_launcher);
@@ -100,17 +102,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case  R.id.logout:
-                FirebaseAuth.getInstance().signOut();
-                // change this code because your app will crash
-                startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
-                return true;
+        if (item.getItemId() == R.id.logout) {
+            FirebaseAuth.getInstance().signOut();
+            // change this code because your app will crash
+            startActivity(new Intent(MainActivity.this, StartActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+            return true;
         }
         return false;
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter {
+    static class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private ArrayList<Fragment> fragments;
         private ArrayList<String> titles;
@@ -121,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             this.titles = new ArrayList<>();
         }
 
+        @NonNull
         @Override
         public Fragment getItem(int position) {
             return fragments.get(position);
@@ -131,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             return fragments.size();
         }
 
-        public void addFragment(Fragment fragment, String title){
+        void addFragment(Fragment fragment, String title){
             fragments.add(fragment);
             titles.add(title);
         }
@@ -145,4 +147,24 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void status(String status){
+        reference = FirebaseDatabase.getInstance().getReference("Users").child(firebaseUser.getUid());
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("status", status);
+
+        reference.updateChildren(hashMap);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        status("online");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        status("offline");
+    }
 }

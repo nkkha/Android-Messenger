@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -37,7 +38,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Register");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Register");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         username = findViewById(R.id.username);
@@ -50,9 +51,9 @@ public class RegisterActivity extends AppCompatActivity {
         btn_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String txt_username = username.getText().toString();
-                String txt_email = email.getText().toString();
-                String txt_password = password.getText().toString();
+                String txt_username = Objects.requireNonNull(username.getText()).toString();
+                String txt_email = Objects.requireNonNull(email.getText()).toString();
+                String txt_password = Objects.requireNonNull(password.getText()).toString();
 
                 if (TextUtils.isEmpty(txt_username) || TextUtils.isEmpty(txt_email) || TextUtils.isEmpty(txt_password)){
                     Toast.makeText(RegisterActivity.this, "All fields are required", Toast.LENGTH_SHORT).show();
@@ -82,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
                             hashMap.put("id", userid);
                             hashMap.put("username", username);
                             hashMap.put("imageURL", "default");
-//                            hashMap.put("status", "offline");
+                            hashMap.put("status", "offline");
 //                            hashMap.put("search", username.toLowerCase());
 
                             reference.setValue(hashMap).addOnCompleteListener(new OnCompleteListener<Void>() {
