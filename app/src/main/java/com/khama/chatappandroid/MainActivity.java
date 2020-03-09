@@ -138,8 +138,6 @@ public class MainActivity extends AppCompatActivity {
             titles.add(title);
         }
 
-        // Ctrl + O
-
         @Nullable
         @Override
         public CharSequence getPageTitle(int position) {
@@ -157,6 +155,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        status("online");
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         status("online");
@@ -165,6 +169,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        status("offline");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         status("offline");
     }
 }
