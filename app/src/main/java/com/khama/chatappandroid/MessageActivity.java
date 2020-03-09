@@ -88,7 +88,7 @@ public class MessageActivity extends AppCompatActivity {
             public void onClick(View view) {
                 notify = true;
                 String msg = text_send.getText().toString();
-                if (!msg.equals("")){
+                if (!msg.equals("")) {
                     sendMessage(fuser.getUid(), userid, msg);
                 } else {
                     Toast.makeText(MessageActivity.this, "You can't send empty message", Toast.LENGTH_SHORT).show();
@@ -105,7 +105,7 @@ public class MessageActivity extends AppCompatActivity {
                 User user = dataSnapshot.getValue(User.class);
                 assert user != null;
                 username.setText(user.getUsername());
-                if (user.getImageURL().equals("default")){
+                if (user.getImageURL().equals("default")) {
                     profile_image.setImageResource(R.mipmap.ic_launcher);
                 } else {
                     //and this
@@ -135,7 +135,7 @@ public class MessageActivity extends AppCompatActivity {
         reference.child("Chats").push().setValue(hashMap);
     }
 
-    private void readMessages(final String myid, final String userid, final String imageurl){
+    private void readMessages(final String myid, final String userid, final String imageurl) {
         mchat = new ArrayList<>();
 
         reference = FirebaseDatabase.getInstance().getReference("Chats");
@@ -143,11 +143,11 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mchat.clear();
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
                     assert chat != null;
                     if (chat.getReceiver().equals(myid) && chat.getSender().equals(userid) ||
-                            chat.getReceiver().equals(userid) && chat.getSender().equals(myid)){
+                            chat.getReceiver().equals(userid) && chat.getSender().equals(myid)) {
                         mchat.add(chat);
                     }
 

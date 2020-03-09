@@ -23,7 +23,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private Context mContext;
     private List<User> mUsers;
 
-    public UserAdapter(Context mContext, List<User> mUsers){
+    public UserAdapter(Context mContext, List<User> mUsers) {
         this.mUsers = mUsers;
         this.mContext = mContext;
     }
@@ -61,7 +61,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return mUsers.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder{
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public TextView username;
         ImageView profile_image;
