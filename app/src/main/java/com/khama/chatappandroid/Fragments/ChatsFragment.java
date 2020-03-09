@@ -36,7 +36,7 @@ public class ChatsFragment extends Fragment {
     private FirebaseUser fuser;
     private DatabaseReference reference;
 
-    private List<String> usersList;
+    private List<String> chatsList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,23 +49,23 @@ public class ChatsFragment extends Fragment {
 
         fuser = FirebaseAuth.getInstance().getCurrentUser();
 
-        usersList = new ArrayList<>();
+        chatsList = new ArrayList<>();
 
         reference = FirebaseDatabase.getInstance().getReference("Chats");
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                usersList.clear();
+                chatsList.clear();
 
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Chat chat = snapshot.getValue(Chat.class);
 
                     assert chat != null;
                     if (chat.getSender().equals(fuser.getUid())) {
-                        usersList.add(chat.getReceiver());
+                        chatsList.add(chat.getReceiver());
                     }
                     if (chat.getReceiver().equals(fuser.getUid())) {
-                        usersList.add(chat.getSender());
+                        chatsList.add(chat.getSender());
                     }
                 }
 
@@ -89,19 +89,15 @@ public class ChatsFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUsers.clear();
+                outer:
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     User user = snapshot.getValue(User.class);
-                    for (String id : usersList) {
-                        assert user != null;
-                        if (user.getId().equals(id)) {
-                            if (mUsers.size() != 0) {
-                                for (User user1 : mUsers) {
-                                    if (!user.getId().equals(user1.getId())) {
-                                        mUsers.add(user);
-                                    }
-                                }
-                            } else {
+                    assert user != null;
+                    if (!fuser.getUid().equals(user.getId())) {
+                        for (String id : chatsList) {
+                            if (user.getId().equals(id)) {
                                 mUsers.add(user);
+                                continue outer;
                             }
                         }
                     }
