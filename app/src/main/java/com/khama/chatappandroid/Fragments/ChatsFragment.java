@@ -19,12 +19,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.khama.chatappandroid.Adapter.UserAdapter;
-import com.khama.chatappandroid.Model.Chat;
+import com.khama.chatappandroid.Model.Chatlist;
 import com.khama.chatappandroid.Model.User;
 import com.khama.chatappandroid.R;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ChatsFragment extends Fragment {
@@ -34,10 +33,9 @@ public class ChatsFragment extends Fragment {
     private UserAdapter userAdapter;
     private List<User> mUsers;
 
-    private FirebaseUser fuser;
     private DatabaseReference reference;
 
-    private List<String> chatsList;
+    private List<Chatlist> usersList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,29 +46,22 @@ public class ChatsFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        fuser = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser fuser = FirebaseAuth.getInstance().getCurrentUser();
 
-        chatsList = new ArrayList<>();
+        usersList = new ArrayList<>();
 
-        reference = FirebaseDatabase.getInstance().getReference("Chats");
+        assert fuser != null;
+        reference = FirebaseDatabase.getInstance().getReference("Chatlist").child(fuser.getUid());
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                chatsList.clear();
-
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Chat chat = snapshot.getValue(Chat.class);
-
-                    assert chat != null;
-                    if (chat.getSender().equals(fuser.getUid())) {
-                        chatsList.add(chat.getReceiver());
-                    }
-                    if (chat.getReceiver().equals(fuser.getUid())) {
-                        chatsList.add(chat.getSender());
-                    }
+                usersList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
+                    Chatlist chatlist = snapshot.getValue(Chatlist.class);
+                    usersList.add(chatlist);
                 }
 
-                readChats();
+                chatList();
             }
 
             @Override
@@ -82,24 +73,19 @@ public class ChatsFragment extends Fragment {
         return view;
     }
 
-    private void readChats() {
+    private void chatList() {
         mUsers = new ArrayList<>();
         reference = FirebaseDatabase.getInstance().getReference("Users");
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mUsers.clear();
-                outer:
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()){
                     User user = snapshot.getValue(User.class);
-                    assert user != null;
-                    if (!fuser.getUid().equals(user.getId())) {
-                        for (String id : chatsList) {
-                            if (user.getId().equals(id)) {
-                                mUsers.add(user);
-                                continue outer;
-                            }
+                    for (Chatlist chatlist : usersList){
+                        assert user != null;
+                        if (user.getId().equals(chatlist.getId())){
+                            mUsers.add(user);
                         }
                     }
                 }
@@ -114,24 +100,4 @@ public class ChatsFragment extends Fragment {
         });
     }
 
-    private void status(String status){
-        reference = FirebaseDatabase.getInstance().getReference("Users").child(fuser.getUid());
-
-        HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("status", status);
-
-        reference.updateChildren(hashMap);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        status("online");
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        status("offline");
-    }
 }

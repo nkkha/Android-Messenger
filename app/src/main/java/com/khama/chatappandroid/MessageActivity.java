@@ -64,7 +64,7 @@ public class MessageActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MessageActivity.this, MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+                startActivity(new Intent(getApplicationContext(), MainActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
             }
         });
 
@@ -156,6 +156,25 @@ public class MessageActivity extends AppCompatActivity {
         hashMap.put("isSeen", false);
 
         reference.child("Chats").push().setValue(hashMap);
+
+        // add user to chat fragment
+        final DatabaseReference chatRef = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(fuser.getUid())
+                .child(userid);
+
+        chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.exists()){
+                    chatRef.child("id").setValue(userid);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void readMessages(final String myid, final String userid, final String imageurl) {
