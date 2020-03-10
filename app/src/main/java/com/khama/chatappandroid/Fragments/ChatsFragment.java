@@ -32,10 +32,9 @@ public class ChatsFragment extends Fragment {
 
     private UserAdapter userAdapter;
     private List<User> mUsers;
+    private List<Chatlist> usersList;
 
     private DatabaseReference reference;
-
-    private List<Chatlist> usersList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,10 +59,8 @@ public class ChatsFragment extends Fragment {
                     Chatlist chatlist = snapshot.getValue(Chatlist.class);
                     usersList.add(chatlist);
                 }
-
                 chatList();
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
