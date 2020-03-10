@@ -13,4 +13,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="your_email">Your Email</string>
+    <string name="reset">Reset</string>
+    <string name="by_clicking_reset_you_will_receive_an_email_to_reset_you_password">By clicking RESET, you will receive an email to reset you password</string>
 </resources>
