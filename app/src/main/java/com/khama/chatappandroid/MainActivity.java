@@ -154,15 +154,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        status("online");
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        status("online");
+        if(firebaseUser != null) {
+            status("online");
+        }
     }
 
     @Override
@@ -171,9 +167,4 @@ public class MainActivity extends AppCompatActivity {
         status("offline");
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        status("offline");
-    }
 }

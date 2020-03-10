@@ -162,6 +162,11 @@ public class MessageActivity extends AppCompatActivity {
                 .child(fuser.getUid())
                 .child(userid);
 
+        final DatabaseReference chatRefReceiver = FirebaseDatabase.getInstance().getReference("Chatlist")
+                .child(receiver)
+                .child(fuser.getUid());
+        chatRefReceiver.child("id").setValue(fuser.getUid());
+
         chatRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
